@@ -14,7 +14,7 @@ phases:   # 빌드 단계
   post_build:
     commands:
       - echo Build Start
-      - ./gradle bootJar
+      - ./gradlew bootJar
 artifacts:
   files:
     - build/libs/code-build-test-0.0.1-SNAPSHOT.jar  # 업로드 할 파일들
