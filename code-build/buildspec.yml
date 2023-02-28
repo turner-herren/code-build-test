@@ -9,13 +9,14 @@ phases:   # 빌드 단계
       - gradle -version
   pre_build:
     commands:
-      - $(aws ecr get-login --region $AWS_REGION --no-include-email)
-      - REPOSITORY_URI=$AWS_ECR_URL
-      - IMAGE_TAG=$AWS_ECR_IMAGE_TAG
+      - echo "test Start"
+      - $(aws ecr get-login --region ${AWS_REGION} --no-include-email)
+      - REPOSITORY_URI=${AWS_ECR_URL}
+      - IMAGE_TAG=${AWS_ECR_IMAGE_TAG}
   build:
     commands:
       - echo Test Start
-      - ./gradlew test
+      - ./gradlew clean build jacocoTestReport
   post_build:
     commands:
       - echo Build Start
