@@ -26,5 +26,7 @@ artifacts:
   discard-paths: yes # 파일명 기준으로만 업로드
 
 reports:
-  junit:
-    - '**/test-results/**/*.xml'
+  jacoco-report:
+    files:
+      - 'build/test-results/**/*.xml'
+    file-format: 'JACOCOXML'
