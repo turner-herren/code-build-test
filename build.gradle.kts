@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
+    id("jacoco")
 }
 
 group = "com.example"
@@ -29,6 +30,18 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.isEnabled = true
+        html.destination = file("$buildDir/reports/test_result.xml")
+    }
 }
 
 tasks.withType<KotlinCompile> {

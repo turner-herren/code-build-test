@@ -7,6 +7,11 @@ phases:   # 빌드 단계
     commands:
       - java -version
       - gradle -version
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_REGION --no-include-email)
+      - REPOSITORY_URI=$AWS_ECR_URL
+      - IMAGE_TAG=$AWS_ECR_IMAGE_TAG
   build:
     commands:
       - echo Test Start
@@ -19,6 +24,7 @@ artifacts:
   files:
     - build/libs/code-build-test-0.0.1-SNAPSHOT.jar  # 업로드 할 파일들
   discard-paths: yes # 파일명 기준으로만 업로드
-cache:
-  paths:
-    - '/root/.m2/**/*'   # S3 cache에 등록할 파일들
+
+reports:
+  junit:
+    - 'build/test-results/**/*.xml'
