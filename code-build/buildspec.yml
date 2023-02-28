@@ -27,5 +27,5 @@ phases:   # 빌드 단계
 reports:
   jacoco-report:
     files:
-      - 'build/test-results/**/*.xml'
+      - '**/test-results/**/*.xml'
     file-format: 'JACOCOXML'
