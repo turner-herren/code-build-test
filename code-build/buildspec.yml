@@ -10,9 +10,9 @@ phases:   # 빌드 단계
   pre_build:
     commands:
       - echo "test Start"
-      - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URL}
-      - REPOSITORY_URI=${AWS_ECR_URL}
-      - IMAGE_TAG=${AWS_ECR_IMAGE_TAG}
+      - aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URL}
+      - REPOSITORY_URI=${ECR_URL}
+      - IMAGE_TAG=${IMAGE_TAG}
   build:
     commands:
       - echo Test Start
