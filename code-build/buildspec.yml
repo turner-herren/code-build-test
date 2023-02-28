@@ -4,6 +4,7 @@ phases:   # 빌드 단계
   install:
     runtime-versions:
       java: corretto17
+      docker: 20
     commands:
       - java -version
       - gradle -version
