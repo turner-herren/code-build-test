@@ -27,4 +27,4 @@ artifacts:
 
 reports:
   junit:
-    - 'build/test-results/**/*.xml'
+    - '**/test-results/**/*.xml'
