@@ -33,14 +33,14 @@ dependencies {
 }
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.8"
 }
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
         xml.isEnabled = true
-        html.destination = file("$buildDir/reports/test_result.xml")
+        xml.destination = file("$buildDir/reports/test_result.xml")
     }
 }
 
