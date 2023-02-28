@@ -3,7 +3,7 @@ version: 0.2  # 0.2 권장
 phases:   # 빌드 단계
   install:
     runtime-versions:
-      java: corretto17
+      docker: 20
     commands:
       - java -version
       - gradle -version
