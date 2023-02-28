@@ -15,7 +15,7 @@ phases:   # 빌드 단계
       commands:
         - echo Build started on `date`
         - echo Building the Docker image...
-        - ./gradle clean build jacocoTestReport
+        - ./gradlew clean build jacocoTestReport
         - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
         - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
     post_build:
@@ -27,5 +27,5 @@ phases:   # 빌드 단계
 reports:
   jacoco-report:
     files:
-      - 'build/reports/test_result.xml'
+      - './build/reports/test_result.xml'
     file-format: 'JACOCOXML'
