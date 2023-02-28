@@ -24,8 +24,3 @@ phases:   # 빌드 단계
         - echo Pushing the Docker image...
         - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
-reports:
-  jacoco-report:
-    files:
-      - './build/reports/test_result.xml'
-    file-format: 'JACOCOXML'

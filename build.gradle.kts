@@ -39,8 +39,22 @@ jacoco {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        xml.isEnabled = true
-        xml.destination = file("$buildDir/reports/test_result.xml")
+        xml.required.set(true)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+
+        rule {
+            element = "CLASS"
+
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = "0.90".toBigDecimal()
+            }
+        }
     }
 }
 
