@@ -13,15 +13,13 @@ phases:   # 빌드 단계
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
-      - echo $(pwd)
       - echo Build started on `date`
       - echo Building the Docker image...
-      - ./gradlew clean build jacocoTestReport
+      - ./gradlew clean build
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
     commands:
-      - echo $(pwd)
       - echo $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Build completed on `date`
       - echo Pushing the Docker image...
@@ -32,10 +30,11 @@ reports:
     files:
       - '**/*'
     base-directory: 'build/test-results/test'
-  arn:aws:codebuild:ap-northeast-2:248704842720:report-group/code-build-test-coverage-report:
-    files:
-      - 'build/jacoco-report/test/jacocoTestReport.xml'
-    file-format: 'JACOCOXML'
+  # Code Coverage
+  # arn:aws:codebuild:ap-northeast-2:248704842720:report-group/code-build-test-coverage-report:
+  #   files:
+  #     - 'build/jacoco-report/test/jacocoTestReport.xml'
+  #   file-format: 'JACOCOXML'
 
 artifacts:
   files:
@@ -44,6 +43,6 @@ artifacts:
 
 cache:
   paths:
-    - '$HOME/.gradle/caches'
+    - '$HOME/.m2/**/*'
 
 
