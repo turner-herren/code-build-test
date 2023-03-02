@@ -44,5 +44,6 @@ artifacts:
 cache:
   paths:
     - '$HOME/.m2/**/*'
+    - '.gradle/**/*'
 
 
