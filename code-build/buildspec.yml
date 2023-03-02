@@ -13,6 +13,7 @@ phases:   # 빌드 단계
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
     build:
       commands:
+        - pwd
         - echo Build started on `date`
         - echo Building the Docker image...
         - ./gradlew clean build jacocoTestReport
@@ -20,6 +21,7 @@ phases:   # 빌드 단계
         - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
     post_build:
       commands:
+        - pwd
         - echo $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
         - echo Build completed on `date`
         - echo Pushing the Docker image...
