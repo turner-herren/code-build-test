@@ -26,10 +26,15 @@ phases:   # 빌드 단계
         - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 reports:
-  jacoco-report:
+  arn:aws:codebuild:ap-northeast-2:248704842720:report-group/code-build-test-report:
     files:
-      - 'build/test-results/test/*.xml'
-    file-format: 'JACOCOXML'
+      - '**/*'
+    base-directory: 'build/test-results/test'
+
+artifacts:
+  files:
+    - '**/*'
+  name: code-build-test-$(date + %Y-%m-%d)
 
 cache:
   paths:
