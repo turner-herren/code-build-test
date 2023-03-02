@@ -30,6 +30,10 @@ reports:
     files:
       - '**/*'
     base-directory: 'build/test-results/test'
+  arn:aws:codebuild:ap-northeast-2:248704842720:report-group/code-build-test-coverage-report:
+    files:
+      - 'build/jacoco-report/test/jacocoTestReport.xml'
+    file-format: 'JACOCOXML'
 
 artifacts:
   files:
