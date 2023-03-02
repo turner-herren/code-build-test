@@ -45,5 +45,7 @@ cache:
   paths:
     - '$HOME/.m2/**/*'
     - '.gradle/**/*'
+    - '/root/.gradle/wrapper/**/*'
+    - '/root/.gradle/**/*'
 
 
