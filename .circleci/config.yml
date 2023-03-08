@@ -2,17 +2,23 @@ version: 2.1
 insights:
   performance: true
 
-jobs:
-  test:
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+  aws-ecs: circleci/aws-ecs@3.2.0
+  gradle: circleci/gradle@3.0.0
+
+executors:
+  build-executor:
     docker:
       - image: circleci/openjdk:17.0-jdk-buster
-
-    working_directory: ~/code-build-test
     environment:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-
+  
+jobs:
+  test:
+    executor: build-executor
     steps:
       - checkout
       - restore_cache:
@@ -28,15 +34,7 @@ jobs:
             - .gradle/
 
   build:
-    docker:
-      - image: circleci/openjdk:17.0-jdk-buster
-
-    working_directory: ~/code-build-test
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-
+    executor: build-executor
     steps:
       - checkout
       - restore_cache:
@@ -47,19 +45,12 @@ jobs:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
           paths:
             - .gradle/
-
       - store_artifacts:
           path: build/libs
-      # docker build를  하기 위해 docker를 이미 설치한다.
-      - setup_remote_docker:
-          version: 19.03.13
-      - run: docker build --build-arg JAR_FILE=build/libs/code-build-test-0.0.1-SNAPSHOT.jar --tag roseoutz/test:latest .
-      - run: docker login -u roseoutz -p rose2391@
-      - run: docker push roseoutz/test:latest
 
 workflows:
   version: 2
-  build_and_test:
+  build-deploy:
     when:
       or:
       - equal: [ circleci-project-setup, << pipeline.git.branch >> ]
@@ -68,3 +59,20 @@ workflows:
       - build:
           requires:
             - test
+      - aws-ecr/build-and-push-image:
+          requires:
+            - build
+          context: AWS_CREDENTIAL
+          attach-workspace: true
+          checkout: false
+          region: '${AWS_REGION}'
+          repo: '${SERVICE_NAME}'
+          tag: "latest,${CIRCLE_SHA1}"
+      - aws-ecs/deploy-service:
+          requires:
+            - aws-ecr/build-and-push-image
+          context: AWS_CREDENTIAL
+          family: '${SERVICE_NAME}'
+          cluster-name: '${SERVICE_NAME}-cluster'
+          service-name: '${SERVICE_NAME}-service'
+          container-image-name-updates: 'container=${SERVICE_NAME},tag=${CIRCLE_SHA1}'
