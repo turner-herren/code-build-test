@@ -16,6 +16,9 @@ jobs:
     steps:
       - checkout:
           branch: circleci-project-setup
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_cache: true
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
@@ -41,7 +44,9 @@ jobs:
     steps:
       - checkout:
           branch: circleci-project-setup
-
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_cache: true
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
@@ -53,9 +58,6 @@ jobs:
 
       - store_artifacts:
           path: build/libs
-      # docker build를  하기 위해 docker를 이미 설치한다.
-      - setup_remote_docker:
-          version: 19.03.13
       - run: docker build --build-arg JAR_FILE=build/libs/code-build-test-0.0.1-SNAPSHOT.jar --tag roseoutz/test:latest .
       - run: docker login -u roseoutz -p rose2391@
       - run: docker push roseoutz/test:latest
