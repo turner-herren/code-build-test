@@ -66,5 +66,5 @@ workflows:
     jobs:
       - test
       - build:
-        requires:
-          - build
+          requires:
+            - build
