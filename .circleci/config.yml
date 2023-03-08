@@ -46,7 +46,7 @@ jobs:
           paths:
             - .gradle/
       - store_artifacts:
-          path: build/libs
+          path: build/libs/
 
 workflows:
   version: 2
