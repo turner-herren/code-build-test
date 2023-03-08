@@ -5,7 +5,7 @@ insights:
 jobs:
   test:
     docker:
-      - image: circleci/openjdk:17.0-jdk-buster
+      - image: circleci/gradle@3.0.0
 
     working_directory: ~/code-build-test
     environment:
