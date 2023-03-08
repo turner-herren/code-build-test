@@ -3,6 +3,34 @@ insights:
   performance: true
 
 jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:17.0-jdk-buster
+
+    working_directory: ~/code-build-test
+    environment:
+        # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    steps:
+      - checkout:
+          branch: circleci-project-setup
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_cache: true
+      - restore_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - run: ./gradlew test
+      - store_test_results:
+          path: build/test-results/test
+
+      - save_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - .gradle/
+
   build:
     docker:
       - image: circleci/openjdk:17.0-jdk-buster
@@ -34,14 +62,11 @@ jobs:
       - run: docker login -u roseoutz -p rose2391@
       - run: docker push roseoutz/test:latest
 
-orbs:
-  gradle: circleci/gradle@3.0.0
 workflows:
+  version: 2
   build_and_test:
     jobs:
-      - gradle/test:
-          deps_checksum_file: build.gradle.kts
-          test_results_path: build/test-results/test
+      - test
       - build:
           requires:
-            - gradle/test
+            - test
