@@ -71,7 +71,7 @@ workflows:
       - aws-ecs/deploy-service-update:
           name: deploy-service
           requires:
-            - aws-ecr/build-and-push-image
+            - push-image
           context: AWS_CREDENTIAL
           family: '${SERVICE_NAME}'
           cluster: '${SERVICE_NAME}-cluster'
