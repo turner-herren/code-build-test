@@ -65,7 +65,6 @@ workflows:
             - build
           context: AWS_CREDENTIAL
           attach-workspace: true
-          path: ~/code-build-test/
           repo: '${SERVICE_NAME}'
           tag: 'latest,${CIRCLE_SHA1}'
       - aws-ecs/deploy-service-update:
