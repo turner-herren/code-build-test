@@ -1,45 +1,61 @@
-# Java Gradle CircleCI 2.0 configuration file
-# See: https://circleci.com/docs/2.0/language-java/
-version: 2
+version: 2.1
+insights:
+  performance: true
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  test:
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:17.0-jdk-buster
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+    working_directory: ~/code-build-test
+    environment:
+        # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    steps:
+      - checkout:
+          branch: circleci-project-setup
+      - restore_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - run: ./gradlew test
+      - store_test_results:
+          path: build/test-results/test
+
+      - save_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - .gradle/
+
+  build:
+    docker:
+      - image: circleci/openjdk:17.0-jdk-buster
 
     working_directory: ~/code-build-test
-
     environment:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+
     steps:
-      - checkout
+      - checkout:
+          branch: circleci-project-setup
 
-      # Download and cache dependencies
       - restore_cache:
-          keys:
-            - gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-            # fallback to using the latest cache if no exact match is found
-
-      - run: ./gradlew dependencies
-
-      - save_cache:
-          paths:
-            - ~/.gradle
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
-      # run tests!
-      - run: ./gradlew test
+      - run: ./gradlew build
+      - save_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - .gradle/
+
+      - store_artifacts:
+          path: build/libs
+      # docker build를  하기 위해 docker를 이미 설치한다.
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: docker build --build-arg JAR_FILE=build/libs/code-build-test-0.0.1-SNAPSHOT.jar --tag roseoutz/test:latest .
+      - run: docker login -u roseoutz -p rose2391@
+      - run: docker push roseoutz/test:latest
