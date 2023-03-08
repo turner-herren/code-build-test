@@ -60,15 +60,16 @@ workflows:
           requires:
             - test
       - aws-ecr/build-and-push-image:
+          name: push-image
           requires:
             - build
           context: AWS_CREDENTIAL
           attach-workspace: true
           checkout: false
-          region: '${AWS_REGION}'
           repo: '${SERVICE_NAME}'
-          tag: "latest,${CIRCLE_SHA1}"
+          tag: 'latest,${CIRCLE_SHA1}'
       - aws-ecs/deploy-service-update:
+          name: deploy-service
           requires:
             - aws-ecr/build-and-push-image
           context: AWS_CREDENTIAL
