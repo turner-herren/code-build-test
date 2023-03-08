@@ -14,8 +14,7 @@ jobs:
       TERM: dumb
 
     steps:
-      - checkout:
-          branch: circleci-project-setup
+      - checkout
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
@@ -39,9 +38,7 @@ jobs:
       TERM: dumb
 
     steps:
-      - checkout:
-          branch: circleci-project-setup
-
+      - checkout
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
