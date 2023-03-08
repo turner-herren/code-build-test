@@ -59,3 +59,10 @@ jobs:
       - run: docker build --build-arg JAR_FILE=build/libs/code-build-test-0.0.1-SNAPSHOT.jar --tag roseoutz/test:latest .
       - run: docker login -u roseoutz -p rose2391@
       - run: docker push roseoutz/test:latest
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - test
+      - build
