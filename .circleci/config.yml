@@ -37,9 +37,9 @@ jobs:
       - store_artifacts:
           path: build/libs/
       - persist_to_workspace:
-          root: "~/code-build-test"
+          root: .
           paths:
-            - "~/code-build-test/"
+            - .
 
 workflows:
   version: 2
