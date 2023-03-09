@@ -39,8 +39,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - build/libs/
-
+            - .
 workflows:
   version: 2
   build-deploy:
@@ -56,7 +55,7 @@ workflows:
           context: AWS_CREDENTIAL
           checkout: false
           attach-workspace: true
-          workspace-root: /
+          workspace-root: .
           repo: '${SERVICE_NAME}'
           tag: 'latest,${CIRCLE_SHA1}'
       - aws-ecs/deploy-service-update:
