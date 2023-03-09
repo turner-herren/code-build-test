@@ -64,5 +64,5 @@ workflows:
             - push-image
           context: AWS_CREDENTIAL
           cluster: '${SERVICE_NAME}'
-          family: '${SERVICE_NAME}-service'
+          family: '${SERVICE_NAME}'
           container-image-name-updates: 'container=${SERVICE_NAME},tag=latest'
