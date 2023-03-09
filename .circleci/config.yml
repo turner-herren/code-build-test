@@ -65,4 +65,5 @@ workflows:
           context: AWS_CREDENTIAL
           cluster: '${SERVICE_NAME}'
           family: '${SERVICE_NAME}-task'
+          service-name: '${SERVICE_NAME}-service'
           container-image-name-updates: 'container=${SERVICE_NAME},tag=${CIRCLE_SHA1}'
