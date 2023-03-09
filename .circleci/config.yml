@@ -63,6 +63,6 @@ workflows:
           requires:
             - push-image
           context: AWS_CREDENTIAL
-          family: '${SERVICE_NAME}'
-          cluster: '${SERVICE_NAME}-cluster'
+          cluster: '${SERVICE_NAME}'
+          family: '${SERVICE_NAME}-service'
           container-image-name-updates: 'container=${SERVICE_NAME},tag=${CIRCLE_SHA1}'
