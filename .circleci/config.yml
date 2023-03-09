@@ -8,9 +8,6 @@ orbs:
   gradle: circleci/gradle@3.0.0
 
 executors:
-  push-executor:
-    docker:
-      - image: circleci/aws-ecr@8.2.1
   build-executor:
     docker:
       - image: circleci/openjdk:17.0-jdk-buster
@@ -39,11 +36,19 @@ jobs:
             - .gradle/
       - store_artifacts:
           path: build/libs/
-  push-image:
-    executor: push-executor
-    steps:
-      - retrieve_artifacts:
-          path: build/libs/code-build-test-0.0.1-SNAPSHOT.jar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "~/code-build-test/"
+
+workflows:
+  version: 2
+  build-deploy:
+    when:
+      or:
+      - equal: [ circleci-project-setup, << pipeline.git.branch >> ]
+    jobs:
+      - test-build
       - aws-ecr/build-and-push-image:
           name: push-image
           requires:
@@ -54,17 +59,6 @@ jobs:
           attach-workspace: true
           repo: '${SERVICE_NAME}'
           tag: 'latest,${CIRCLE_SHA1}'
-workflows:
-  version: 2
-  build-deploy:
-    when:
-      or:
-      - equal: [ circleci-project-setup, << pipeline.git.branch >> ]
-    jobs:
-      - test-build
-      - pusu-image:
-          requires:
-            - test-build
       - aws-ecs/deploy-service-update:
           name: deploy-service
           requires:
