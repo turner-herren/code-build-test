@@ -17,7 +17,7 @@ executors:
       TERM: dumb
   
 jobs:
-  test:
+  test-build:
     executor: build-executor
     steps:
       - checkout
@@ -27,18 +27,6 @@ jobs:
       - run: ./gradlew test
       - store_test_results:
           path: build/test-results/test
-
-      - save_cache:
-          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-          paths:
-            - .gradle/
-
-  build:
-    executor: build-executor
-    steps:
-      - checkout
-      - restore_cache:
-          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
       - run: ./gradlew build
       - save_cache:
@@ -55,15 +43,13 @@ workflows:
       or:
       - equal: [ circleci-project-setup, << pipeline.git.branch >> ]
     jobs:
-      - test
-      - build:
-          requires:
-            - test
+      - test-build
       - aws-ecr/build-and-push-image:
           name: push-image
           requires:
-            - build
+            - test-build
           context: AWS_CREDENTIAL
+          checkout: false
           attach-workspace: true
           repo: '${SERVICE_NAME}'
           tag: 'latest,${CIRCLE_SHA1}'
