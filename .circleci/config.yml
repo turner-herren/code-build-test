@@ -19,6 +19,7 @@ executors:
 jobs:
   test-build:
     executor: build-executor
+    working_directory: ~/code-build-test
     steps:
       - checkout
       - restore_cache:
@@ -50,6 +51,7 @@ workflows:
             - test-build
           context: AWS_CREDENTIAL
           checkout: false
+          workspace-root: ~/code-build-test
           attach-workspace: true
           repo: '${SERVICE_NAME}'
           tag: 'latest,${CIRCLE_SHA1}'
