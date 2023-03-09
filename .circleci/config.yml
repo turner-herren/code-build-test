@@ -55,7 +55,6 @@ workflows:
             - test-build
           context: AWS_CREDENTIAL
           checkout: false
-          workspace-root: ~/code-build-test
           attach-workspace: true
           repo: '${SERVICE_NAME}'
           tag: 'latest,${CIRCLE_SHA1}'
