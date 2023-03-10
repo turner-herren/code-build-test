@@ -56,14 +56,14 @@ workflows:
           checkout: false
           attach-workspace: true
           workspace-root: .
-          repo: '${SERVICE_NAME}'
+          repo: '${CIRCLE_PROJECT_REPONAME}'
           tag: 'latest,${CIRCLE_SHA1}'
       - aws-ecs/deploy-service-update:
           name: deploy-service
           requires:
             - push-image
           context: AWS_CREDENTIAL
-          cluster: '${SERVICE_NAME}'
-          family: '${SERVICE_NAME}-task'
-          service-name: '${SERVICE_NAME}-service'
-          container-image-name-updates: 'container=${SERVICE_NAME},tag=${CIRCLE_SHA1}'
+          cluster: '${CIRCLE_PROJECT_REPONAME}'
+          family: '${CIRCLE_PROJECT_REPONAME}-task'
+          service-name: '${CIRCLE_PROJECT_REPONAME}-service'
+          container-image-name-updates: 'container=${CIRCLE_PROJECT_REPONAME},tag=${CIRCLE_SHA1}'
