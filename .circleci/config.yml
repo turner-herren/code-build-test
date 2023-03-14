@@ -86,4 +86,4 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'container=${pipeline.parameters.image_name}, image-and-tag=${pipeline.parameters.image_name}:${CIRCLE_SHA1}'
+          container-image-name-updates: 'container=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
