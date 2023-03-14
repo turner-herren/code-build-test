@@ -22,6 +22,8 @@ parameters:
     default: code-build-test
     type: string
 
+environment:
+  ecs-container-image-name-update-value: << pipeline.parameters.image_name >>',tag=${CIRCLE_SHA1}'
 
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
@@ -88,4 +90,4 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: << pipeline.parameters.image_name >>',tag=${CIRCLE_SHA1}'
+          container-image-name-updates: '${ecs-container-image-name-update-value}'
