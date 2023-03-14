@@ -23,7 +23,7 @@ parameters:
     type: string
 
 environment:
-  ecs-container-image-name-update-value: << pipeline.parameters.image_name >>',tag=${CIRCLE_SHA1}'
+  ecs-container-image-name-update-value: << pipeline.parameters.image_name >>
 
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
