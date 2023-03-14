@@ -44,7 +44,7 @@ jobs:
       - checkout
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - run: echo pipeline.parameters.image_name
+      - run: echo << pipeline.parameters.image_name >>
       - run: echo 'container=${pipeline.parameters.image_name}'
       - run: ./gradlew test
       - store_test_results:
