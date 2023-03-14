@@ -22,6 +22,9 @@ parameters:
     default: code-build-test
     type: string
 
+envivonments:
+
+
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
   aws-ecs: circleci/aws-ecs@3.2.0
@@ -43,7 +46,8 @@ jobs:
       - checkout
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-
+      - run: << pipeline.parameters.is_develop_deploy >>
+      - run: 'container=${pipeline.parameters.image_name}'
       - run: ./gradlew test
       - store_test_results:
           path: build/test-results/test
@@ -86,4 +90,4 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'container=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
+          container-image-name-updates: << pipeline.parameters.image_name >>',tag=${CIRCLE_SHA1}'
