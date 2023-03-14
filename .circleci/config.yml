@@ -46,7 +46,7 @@ jobs:
       - checkout
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - run: echo ${ecs-container-image-name-update-value} 
+      - run: echo ${ecs-image-value}
       - run: echo << pipeline.parameters.image_name >>
       - run: echo 'container=${pipeline.parameters.image_name}'
       - run: ./gradlew test
