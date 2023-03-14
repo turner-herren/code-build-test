@@ -19,7 +19,7 @@ parameters:
     default: code-build-test-service
     type: string
   image_name:
-    default: 248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/code-build-test
+    default: code-build-test
     type: string
 
 orbs:
@@ -85,7 +85,7 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'image=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
+          container-image-name-updates: 'image-and-tag=${pipeline.parameters.image_name}:${CIRCLE_SHA1}'
   production-build-deploy:
     when:
       and:
@@ -111,4 +111,4 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'image=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
+          container-image-name-updates: 'image-and-tag=${pipeline.parameters.image_name}:${CIRCLE_SHA1}'
