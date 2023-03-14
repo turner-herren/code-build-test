@@ -61,9 +61,10 @@ jobs:
             - .
 workflows:
   version: 2
-  develop-build-deploy:
+  build-deploy:
     when:
-      and:
+      or:
+        - equal: [ main, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.is_develop_deploy >> ]
     jobs:
       - test-build
@@ -85,30 +86,4 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'image-and-tag=${pipeline.parameters.image_name}:${CIRCLE_SHA1}'
-  production-build-deploy:
-    when:
-      and:
-        - equal: [ main, << pipeline.git.branch >> ]
-        # - equal: [ true, << pipeline.parameters.is_develop_deploy >> ]
-    jobs:
-      - test-build
-      - aws-ecr/build-and-push-image:
-          name: push-image
-          requires:
-            - test-build
-          context: << pipeline.parameters.aws_credential_name >>
-          checkout: false
-          attach-workspace: true
-          workspace-root: .
-          repo: << pipeline.parameters.image_name >>
-          tag: '${CIRCLE_SHA1}'
-      - aws-ecs/deploy-service-update:
-          name: deploy-service
-          requires:
-            - push-image
-          context: AWS_CREDENTIAL
-          cluster: << pipeline.parameters.cluster_name >>
-          family: << pipeline.parameters.task_name >>
-          service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'image-and-tag=${pipeline.parameters.image_name}:${CIRCLE_SHA1}'
+          container-image-name-updates: 'container=${pipeline.parameters.image_name}, image-and-tag=${pipeline.parameters.image_name}:${CIRCLE_SHA1}'
