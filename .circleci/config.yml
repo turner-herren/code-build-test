@@ -26,9 +26,6 @@ orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
   aws-ecs: circleci/aws-ecs@3.2.0
 
-
-
-
 executors:
   build-executor:
     docker:
@@ -86,8 +83,8 @@ workflows:
             - push-image
           context: AWS_CREDENTIAL
           cluster: << pipeline.parameters.cluster_name >>
-          family: << pipeline.parameters. >>
-          service-name: << pipeline.parameters. >>
+          family: << pipeline.parameters.task_name >>
+          service-name: << pipeline.parameters.service_name >>
           container-image-name-updates: 'image=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
   production-build-deploy:
     when:
@@ -112,6 +109,6 @@ workflows:
             - push-image
           context: AWS_CREDENTIAL
           cluster: << pipeline.parameters.cluster_name >>
-          family: << pipeline.parameters. >>
-          service-name: << pipeline.parameters. >>
+          family: << pipeline.parameters.task_name >>
+          service-name: << pipeline.parameters.service_name >>
           container-image-name-updates: 'image=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
