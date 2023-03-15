@@ -107,6 +107,8 @@ jobs:
             "executionRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
             "networkMode": "awsvpc"
           " ' >> "$BASH_ENV"
+      - run: echo $ECS_NEW_TASK_DEFINITION
+      - run: echo ${ECS_NEW_TASK_DEFINITION}
       - aws-ecs/run-task:
           cluster: << pipeline.parameters.cluster_name >>
           subnet-ids: << pipeline.parameters.new_task_subnet >>
