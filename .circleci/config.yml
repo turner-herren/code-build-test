@@ -70,8 +70,8 @@ jobs:
             - .
 
   create-new-service:
-    executor: build-executor
-    working_directory: ~/code-build-test
+    docker:
+      - image: 'cimg/python:3.10'
     steps:
       - run: |
           echo 'export ECS_NEW_TASK_DEFINITION="
