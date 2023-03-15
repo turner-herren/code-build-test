@@ -81,8 +81,6 @@ jobs:
               {
                 \"name\": \"<< pipeline.parameters.task_name >>\",
                 \"image\": \"248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest\",
-                \"cpu\": 0,
-                \"memory\": 2048,
                 \"portMappings\": [
                   {
                     \"name\": \"<< pipeline.parameters.task_name >>-port\",
@@ -107,6 +105,8 @@ jobs:
             \"requiresCompatibilities\": [
               \"FARGATE\"
             ],
+            \"cpu\": 0,
+            \"memory\": 2048,
             \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"networkMode\": \"awsvpc\"
