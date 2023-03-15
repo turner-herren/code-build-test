@@ -110,8 +110,6 @@ jobs:
             \"networkMode\": \"awsvpc\"
           }
           "' >> "$BASH_ENV"
-      - run: echo $ECS_NEW_TASK_DEFINITION
-      - run: echo ${ECS_NEW_TASK_DEFINITION}
       - aws-cli/setup
       - aws-ecs/run-task:
           capacity-provider-strategy: >-
@@ -120,7 +118,7 @@ jobs:
           cluster: << pipeline.parameters.cluster_name >>
           subnet-ids: << pipeline.parameters.new_task_subnet >>
           security-group-ids: << pipeline.parameters.new_task_security_id >>
-          task-definition: myapp
+          task-definition: ${ECS_NEW_TASK_DEFINITION}
 workflows:
   version: 2
   create-task:
