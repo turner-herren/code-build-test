@@ -114,6 +114,7 @@ jobs:
             }
           ' >> task_definition.json
       - aws-cli/setup
+      - run: cat task_definition.json
       - run: aws ecs register-task-definition --cli-input-json task_definition.json
       - aws-ecs/run-task:
           capacity-provider-strategy: >-
