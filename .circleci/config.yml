@@ -74,7 +74,7 @@ jobs:
     working_directory: ~/code-build-test
     steps:
       - run: |
-          echo 'export ECS_NEW_TASK_DEFINITION="
+          echo 'export ECS_NEW_TASK_DEFINITION="{
             containerDefinitions": [
               {
                 "name": << pipeline.parameters.task_name >>, 
@@ -106,7 +106,7 @@ jobs:
             "taskRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
             "executionRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
             "networkMode": "awsvpc"
-          " ' >> "$BASH_ENV"
+          " }' >> "$BASH_ENV"
       - run: echo $ECS_NEW_TASK_DEFINITION
       - run: echo ${ECS_NEW_TASK_DEFINITION}
       - aws-ecs/run-task:
