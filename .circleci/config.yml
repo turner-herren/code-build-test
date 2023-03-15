@@ -79,13 +79,13 @@ jobs:
             \"family\": \"<< pipeline.parameters.task_name >>\",
             \"containerDefinitions\": [
               {
-                \"name\": << pipeline.parameters.task_name >>,
+                \"name\": \"<< pipeline.parameters.task_name >>\",
                 \"image\": \"248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest\",
                 \"cpu\": 0,
                 \"memory\": 2048,
                 \"portMappings\": [
                   {
-                    \"name\": << pipeline.parameters.task_name >>-port,
+                    \"name\": \"<< pipeline.parameters.task_name >>-port\",
                     \"containerPort\": 8080,
                     \"hostPort\": 8080,
                     \"protocol\": \"tcp\",
