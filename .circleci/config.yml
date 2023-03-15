@@ -74,39 +74,41 @@ jobs:
     working_directory: ~/code-build-test
     steps:
       - run: |
-          echo 'export ECS_NEW_TASK_DEFINITION="{
-            containerDefinitions": [
+          echo 'export ECS_NEW_TASK_DEFINITION="
+            {
+            \"containerDefinitions\": [
               {
-                "name": << pipeline.parameters.task_name >>, 
-                "image": "248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest",
-                "cpu": 0,
-                "memory": 2048,
-                "portMappings":
+                \"name\": << pipeline.parameters.task_name >>,
+                \"image\": \"248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest\",
+                \"cpu\": 0,
+                \"memory\": 2048,
+                \"portMappings\": [
                   {
-                    "name": << pipeline.parameters.task_name >>-port,
-                    "containerPort": 8080,
-                    "hostPort": 8080,
-                    "protocol": "tcp",
-                    "appProtocol": "http"
+                    \"name\": << pipeline.parameters.task_name >>-port,
+                    \"containerPort\": 8080,
+                    \"hostPort\": 8080,
+                    \"protocol\": \"tcp\",
+                    \"appProtocol\": \"http\"
                   }
                 ],
-                "essential": true,
-                "logConfiguration": {
-                  "logDriver": "awslogs",
-                  "options": {
-                    "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/code-build-test-task",
-                    "awslogs-region": "ap-northeast-2",
-                    "awslogs-stream-prefix": "ecs"
+                \"essential\": true,
+                \"logConfiguration\": {
+                  \"logDriver\": \"awslogs\",
+                  \"options\": {
+                    \"awslogs-create-group\": \"true\",
+                    \"awslogs-group\": \"/ecs/code-build-test-task\",
+                    \"awslogs-region\": \"ap-northeast-2\",
+                    \"awslogs-stream-prefix\": \"ecs\"
                   }
                 }
               }
-          ],
-            "family": "<< pipeline.parameters.task_name >>",
-            "taskRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
-            "executionRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
-            "networkMode": "awsvpc"
-          " }' >> "$BASH_ENV"
+            ],
+            \"family\": \"<< pipeline.parameters.task_name >>\",
+            \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
+            \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
+            \"networkMode\": \"awsvpc\"
+          }
+          "' >> "$BASH_ENV"
       - run: echo $ECS_NEW_TASK_DEFINITION
       - run: echo ${ECS_NEW_TASK_DEFINITION}
       - aws-ecs/run-task:
