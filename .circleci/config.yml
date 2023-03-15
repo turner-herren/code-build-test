@@ -3,12 +3,21 @@ insights:
   performance: true
 
 parameters:
-  aws_credential_name:
-    default: AWS_CREDENTIAL
+  is_create_new_task:
+    default: false
+    type: boolean
+  new_task_subnet:
+    default: subnet-a8f912c1
+    type: string
+  new_task_security_id:
+    default: "sg-05c75b4dbf2f83579,sg-c151aea8"
     type: string
   is_develop_deploy:
     default: false
     type: boolean
+  aws_credential_name:
+    default: AWS_CREDENTIAL
+    type: string
   cluster_name:
     default: code-build-test
     type: string
@@ -44,8 +53,6 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - run: echo 'export ECS_IMAGE_NAME="container=<< pipeline.parameters.image_name >>,tag=latest"' >> "$BASH_ENV"
-      - run: echo << pipeline.parameters.image_name >>
-      - run: echo 'container=${pipeline.parameters.image_name}'
       - run: ./gradlew test
       - store_test_results:
           path: build/test-results/test
@@ -61,8 +68,68 @@ jobs:
           root: .
           paths:
             - .
+
+  create-new-service:
+    executor: build-executor
+    working_directory: ~/code-build-test
+    steps:
+      - run: |
+          echo 'export ECS_NEW_TASK_DEFINITION=" \
+            containerDefinitions": [ \
+              { \
+                "name": << pipeline.parameters.task_name >>, \ 
+                "image": "248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest", \
+                "cpu": 0, \
+                "memory": 2048,
+                "portMappings": [
+                  {
+                    "name": << pipeline.parameters.task_name >>-port,
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                  }
+                ],
+                "essential": true,
+                "logConfiguration": {
+                  "logDriver": "awslogs",
+                  "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/code-build-test-task",
+                    "awslogs-region": "ap-northeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                  }
+                }
+              }
+          ],
+            "family": "<< pipeline.parameters.task_name >>",
+            "taskRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
+            "executionRoleArn": "arn:aws:iam::248704842720:role/ecsTaskExecutionRole",
+            "networkMode": "awsvpc"
+          " ' >> "$BASH_ENV"
+      - aws-ecs/run-task:
+          cluster: << pipeline.parameters.cluster_name >>
+          subnet-ids: << pipeline.parameters.new_task_subnet >>
+          security-group-ids: << pipeline.parameters.new_task_security_id >>
+          task-definition: myapp
 workflows:
   version: 2
+  create-task:
+    when:
+      and:
+        - equal: [ true, << pipeline.parameters.is_create_new_task >> ]
+    jobs:
+      - test-build
+      - aws-ecr/build-and-push-image:
+          name: push-image
+          requires:
+            - test-build
+          context: << pipeline.parameters.aws_credential_name >>
+          checkout: false
+          attach-workspace: true
+          workspace-root: .
+          repo: << pipeline.parameters.image_name >>
+          tag: '${CIRCLE_SHA1}'
   build-deploy:
     when:
       or:
