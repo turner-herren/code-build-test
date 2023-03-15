@@ -76,44 +76,43 @@ jobs:
     steps:
       - run: |
           echo '{
-              \"family\": \"<< pipeline.parameters.task_name >>\",
-              \"containerDefinitions\": [
-                {
-                  \"name\": << pipeline.parameters.task_name >>,
-                  \"image\": \"248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest\",
-                  \"cpu\": 0,
-                  \"memory\": 2048,
-                  \"portMappings\": [
-                    {
-                      \"name\": << pipeline.parameters.task_name >>-port,
-                      \"containerPort\": 8080,
-                      \"hostPort\": 8080,
-                      \"protocol\": \"tcp\",
-                      \"appProtocol\": \"http\"
-                    }
-                  ],
-                  \"essential\": true,
-                  \"logConfiguration\": {
-                    \"logDriver\": \"awslogs\",
-                    \"options\": {
-                      \"awslogs-create-group\": \"true\",
-                      \"awslogs-group\": \"/ecs/code-build-test-task\",
-                      \"awslogs-region\": \"ap-northeast-2\",
-                      \"awslogs-stream-prefix\": \"ecs\"
-                    }
+            \"family\": \"<< pipeline.parameters.task_name >>\",
+            \"containerDefinitions\": [
+              {
+                \"name\": << pipeline.parameters.task_name >>,
+                \"image\": \"248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest\",
+                \"cpu\": 0,
+                \"memory\": 2048,
+                \"portMappings\": [
+                  {
+                    \"name\": << pipeline.parameters.task_name >>-port,
+                    \"containerPort\": 8080,
+                    \"hostPort\": 8080,
+                    \"protocol\": \"tcp\",
+                    \"appProtocol\": \"http\"
+                  }
+                ],
+                \"essential\": true,
+                \"logConfiguration\": {
+                  \"logDriver\": \"awslogs\",
+                  \"options\": {
+                    \"awslogs-create-group\": \"true\",
+                    \"awslogs-group\": \"/ecs/code-build-test-task\",
+                    \"awslogs-region\": \"ap-northeast-2\",
+                    \"awslogs-stream-prefix\": \"ecs\"
                   }
                 }
-              ],
-              \"requiresCompatibilities\": [
-                \"FARGATE\"
-              ],
-              \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
-              \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
-              \"networkMode\": \"awsvpc\"
-            }
-          ' >> task_definition.json
+              }
+            ],
+            \"requiresCompatibilities\": [
+              \"FARGATE\"
+            ],
+            \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
+            \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
+            \"networkMode\": \"awsvpc\"
+          }' >> definition.json
       - aws-cli/setup
-      - run: sed 's/\"/"/g' task_definition.json
+      - run: sed 's/\\"/"/g' definition.json > task_definition.json
       - run: cat task_definition.json
       - run: aws ecs register-task-definition --cli-input-json task_definition.json
       - aws-ecs/run-task:
