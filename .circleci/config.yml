@@ -105,6 +105,8 @@ jobs:
             \"requiresCompatibilities\": [
               \"FARGATE\"
             ],
+            \"cpu\": \"256\",
+            \"memory\": \"2048\",
             \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"networkMode\": \"awsvpc\"
