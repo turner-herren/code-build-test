@@ -114,7 +114,7 @@ jobs:
       - aws-cli/setup
       - run: sed 's/\\"/"/g' definition.json > task_definition.json
       - run: cat task_definition.json
-      - run: aws ecs register-task-definition --cli-input-json task_definition.json
+      - run: aws ecs register-task-definition --cli-input-json file://task_definition.json
       - aws-ecs/run-task:
           capacity-provider-strategy: >-
             capacityProvider=FARGATE_SPOT,weight=1
