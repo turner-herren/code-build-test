@@ -130,8 +130,13 @@ workflows:
           workspace-root: .
           repo: << pipeline.parameters.image_name >>
           tag: '${CIRCLE_SHA1}'
+      - create-new-service:
+          requires:
+            - push-image
   build-deploy:
     when:
+      and:
+        - equal: [false, << pipeline.parameters.is_create_new_task >> ]
       or:
         - equal: [ main, << pipeline.git.branch >> ]
         - equal: [ true, << pipeline.parameters.is_develop_deploy >> ]
