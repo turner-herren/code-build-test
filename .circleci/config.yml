@@ -130,7 +130,7 @@ workflows:
           attach-workspace: true
           workspace-root: .
           repo: << pipeline.parameters.image_name >>
-          tag: '${CIRCLE_SHA1}'
+          tag: 'latest'
       - create-new-service:
           requires:
             - push-image
@@ -145,12 +145,13 @@ workflows:
           name: push-image
           requires:
             - test-build
+          create-repo: true
           context: << pipeline.parameters.aws_credential_name >>
           checkout: false
           attach-workspace: true
           workspace-root: .
           repo: << pipeline.parameters.image_name >>
-          tag: '${CIRCLE_SHA1}'
+          tag: 'latest'
       - aws-ecs/deploy-service-update:
           name: deploy-service
           requires:
