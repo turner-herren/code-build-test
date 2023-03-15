@@ -22,9 +22,6 @@ parameters:
     default: code-build-test
     type: string
 
-environment:
-  ecs-image-value: << pipeline.parameters.image_name >>
-
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
   aws-ecs: circleci/aws-ecs@3.2.0
@@ -46,7 +43,7 @@ jobs:
       - checkout
       - restore_cache:
           key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - run: echo ${ecs-image-value}
+      - run: echo 'export ECS_IMAGE_NAME="container=<< pipeline.parameters.image_name >>,tag=latest"' >> "$BASH_ENV"
       - run: echo << pipeline.parameters.image_name >>
       - run: echo 'container=${pipeline.parameters.image_name}'
       - run: ./gradlew test
@@ -91,4 +88,4 @@ workflows:
           cluster: << pipeline.parameters.cluster_name >>
           family: << pipeline.parameters.task_name >>
           service-name: << pipeline.parameters.service_name >>
-          container-image-name-updates: 'container=${ecs-image-value},tag=${CIRCLE_SHA1}'
+          container-image-name-updates: ${ECS_IMAGE_NAME}
