@@ -107,9 +107,7 @@ jobs:
             \"family\": \"<< pipeline.parameters.task_name >>\",
             \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
-            \"networkMode\": \"awsvpc\",
-            \"revision\": \"0\",
-            \"status\": \"ACTIVE\",
+            \"networkMode\": \"awsvpc\"
           }
           "' >> "$BASH_ENV"
       - aws-cli/setup
