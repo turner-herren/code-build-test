@@ -74,14 +74,14 @@ jobs:
     working_directory: ~/code-build-test
     steps:
       - run: |
-          echo 'export ECS_NEW_TASK_DEFINITION=" \
-            containerDefinitions": [ \
-              { \
-                "name": << pipeline.parameters.task_name >>, \ 
-                "image": "248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest", \
-                "cpu": 0, \
+          echo 'export ECS_NEW_TASK_DEFINITION="
+            containerDefinitions": [
+              {
+                "name": << pipeline.parameters.task_name >>, 
+                "image": "248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/<< pipeline.parameters.image_name>>:latest",
+                "cpu": 0,
                 "memory": 2048,
-                "portMappings": [
+                "portMappings":
                   {
                     "name": << pipeline.parameters.task_name >>-port,
                     "containerPort": 8080,
