@@ -75,8 +75,7 @@ jobs:
       - image: 'cimg/python:3.10'
     steps:
       - run: |
-          echo '
-            {
+          echo '{
               \"family\": \"<< pipeline.parameters.task_name >>\",
               \"containerDefinitions\": [
                 {
@@ -114,6 +113,7 @@ jobs:
             }
           ' >> task_definition.json
       - aws-cli/setup
+      - run: sed 's/\"/"/g' task_definition.json
       - run: cat task_definition.json
       - run: aws ecs register-task-definition --cli-input-json task_definition.json
       - aws-ecs/run-task:
