@@ -111,6 +111,7 @@ jobs:
           }
           "' >> "$BASH_ENV"
       - aws-cli/setup
+      - run: aws ecs register-task-definition --cli-json-input $ECS_NEW_TASK_DEFINITION
       - aws-ecs/run-task:
           capacity-provider-strategy: >-
             capacityProvider=FARGATE_SPOT,weight=1
