@@ -34,6 +34,7 @@ parameters:
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
   aws-ecs: circleci/aws-ecs@3.2.0
+  aws-cli: circleci/aws-cli@3.1.4
 
 executors:
   build-executor:
