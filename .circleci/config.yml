@@ -119,7 +119,7 @@ jobs:
           cluster: << pipeline.parameters.cluster_name >>
           subnet-ids: << pipeline.parameters.new_task_subnet >>
           security-group-ids: << pipeline.parameters.new_task_security_id >>
-          task-definition: ${ECS_NEW_TASK_DEFINITION}
+          task-definition: << pipeline.parameters.task_name >>
 workflows:
   version: 2
   create-task:
