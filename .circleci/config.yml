@@ -134,8 +134,8 @@ jobs:
           --network-configuration '{
             "awsvpcConfiguration": 
               {
-                "subnets": << pipeline.parameters.new_task_subnet >>,
-                "securityGroups": << pipeline.parameters.new_task_security_id >>,
+                "subnets": "<< pipeline.parameters.new_task_subnet >>",
+                "securityGroups": "<< pipeline.parameters.new_task_security_id >>",
                 "assignPublicIp": "ENABLED"
               }
             }'
