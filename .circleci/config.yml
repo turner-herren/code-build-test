@@ -141,7 +141,7 @@ workflows:
       and:
         - equal: [ true, << pipeline.parameters.is_create_new_task >> ]
         - equal: [ false, << pipeline.parameters.is_develop_deploy >> ]
-        - not: [ main, << pipeline.git.branch >> ]
+
     jobs:
       - test-build
       - aws-ecr/build-and-push-image:
