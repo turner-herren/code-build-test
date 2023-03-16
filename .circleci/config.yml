@@ -7,10 +7,10 @@ parameters:
     default: false
     type: boolean
   new_task_subnet:
-    default: subnet-a8f912c1
+    default: '["subnet-a8f912c1"]'
     type: string
   new_task_security_id:
-    default: "sg-05c75b4dbf2f83579,sg-c151aea8"
+    default: '["sg-05c75b4dbf2f83579","sg-c151aea8"]'
     type: string
   is_develop_deploy:
     default: false
@@ -124,14 +124,12 @@ jobs:
       - image: 'cimg/python:3.10'
     steps:
       - aws-cli/setup
-      - run: echo 'export SECURITY_LIST="[\\\"$(echo "<< pipeline.parameters.new_task_security_id >>" | sed 's/,/\\",\\"/g')\\\"]"'  >> "$BASH_ENV"
-      - run: echo 'export SUBNET_LIST="[\\\"$(echo "<< pipeline.parameters.new_task_subnet >>" | sed 's/,/","/g')\\\"]"'  >> "$BASH_ENV"
       - run: |
           echo "{
             \"awsvpcConfiguration\":
               {
-              \"subnets\": $(eval echo \$SUBNET_LIST | jq),
-              \"securityGroups\": $(eval echo \$SECURITY_LIST | jq),
+              \"subnets\": \"<< pipeline.parameters.new_task_subnet >>\" ,
+              \"securityGroups\": \"<< pipeline.parameters.new_task_subnet >>\",
               \"assignPublicIp\": \"ENABLED\"
             }
           }"
@@ -145,8 +143,8 @@ jobs:
           --network-configuration "{
             \"awsvpcConfiguration\": 
               {
-                \"subnets\": $SUBNET_LIST ,
-                \"securityGroups\": $SECURITY_LIST,
+                \"subnets\": \"<< pipeline.parameters.new_task_subnet >>\" ,
+                \"securityGroups\": \"<< pipeline.parameters.new_task_subnet >>\",
                 \"assignPublicIp\": \"ENABLED\"
               }
             }"
