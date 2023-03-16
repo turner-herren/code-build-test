@@ -7,10 +7,10 @@ parameters:
     default: false
     type: boolean
   new_task_subnet:
-    default: '["subnet-a8f912c1"]'
+    default: '[\"subnet-a8f912c1\"]'
     type: string
   new_task_security_id:
-    default: '["sg-05c75b4dbf2f83579","sg-c151aea8"]'
+    default: '[\"sg-05c75b4dbf2f83579\",\"sg-c151aea8\"]'
     type: string
   is_develop_deploy:
     default: false
