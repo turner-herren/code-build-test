@@ -148,6 +148,15 @@ workflows:
           workspace-root: .
           repo: << pipeline.parameters.image_name >>
           tag: 'latest'
+      - aws-ecs/deploy-service-update:
+          name: deploy-service
+          requires:
+            - push-image
+          context: AWS_CREDENTIAL
+          cluster: << pipeline.parameters.cluster_name >>
+          family: << pipeline.parameters.task_name >>
+          service-name: << pipeline.parameters.service_name >>
+          container-image-name-updates: ${ECS_IMAGE_NAME}
       - create-new-service:
           context: << pipeline.parameters.aws_credential_name >>
           requires:
