@@ -124,8 +124,8 @@ jobs:
       - image: 'cimg/python:3.10'
     steps:
       - aws-cli/setup
-      - run: echo 'export SECURITY_LIST="[\"$(echo "<< pipeline.parameters.new_task_security_id >>" | sed 's/,/","/g')\"]"'  >> "$BASH_ENV"
-      - run: echo 'export SUBNET_LIST="[\"$(echo "<< pipeline.parameters.new_task_subnet >>" | sed 's/,/","/g')\"]"'  >> "$BASH_ENV"
+      - run: SECURITY_LIST="[\"$(echo "<< pipeline.parameters.new_task_security_id >>" | sed 's/,/","/g')\"]"'
+      - run: SUBNET_LIST="[\"$(echo "<< pipeline.parameters.new_task_subnet >>" | sed 's/,/","/g')\"]"'
       - run: echo $SECURITY_LIST
       - run: echo $SUBNET_LIST
       - run: |
