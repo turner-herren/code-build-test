@@ -175,8 +175,8 @@ workflows:
       #      - push-image
       - create-new-service:
           context: << pipeline.parameters.aws_credential_name >>
-          requires:
-            - create-new-task
+          #requires:
+          #  - create-new-task
       - aws-ecs/deploy-service-update:
           name: deploy-service
           requires:
