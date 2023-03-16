@@ -125,6 +125,24 @@ jobs:
     steps:
       - aws-cli/setup
       - run: |
+          IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_security_id >>"
+          output=()
+          for element in "${array[@]}"
+          do
+          output+=("\"$element\"")
+          done
+          
+          SECURITY_LIST="[${output[@]}]"
+      - run: |
+          IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_subnet >>"
+          output=()
+          for element in "${array[@]}"
+          do
+          output+=("\"$element\"")
+          done
+          
+          SUBNET_LIST="[${output[@]}]"
+      - run: |
           aws ecs create-service \
           --cluster << pipeline.parameters.cluster_name >> \
           --service-name << pipeline.parameters.service_name >> \
@@ -135,7 +153,7 @@ jobs:
             "awsvpcConfiguration": 
               {
                 "subnets": "<< pipeline.parameters.new_task_subnet >>",
-                "securityGroups": "<< pipeline.parameters.new_task_security_id >>",
+                "securityGroups": $SECURITY_GROUP,
                 "assignPublicIp": "ENABLED"
               }
             }'
