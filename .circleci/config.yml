@@ -138,8 +138,8 @@ jobs:
           --network-configuration '{
             "awsvpcConfiguration": 
               {
-                "subnets": $SUBNET_LIST,
-                "securityGroups": $SECURITY_LIST,
+                "subnets": ${SUBNET_LIST},
+                "securityGroups": ${SECURITY_LIST},
                 "assignPublicIp": "ENABLED"
               }
             }'
