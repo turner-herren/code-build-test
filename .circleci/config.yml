@@ -124,7 +124,21 @@ jobs:
       - image: 'cimg/python:3.10'
     steps:
       - aws-cli/setup
-      - run: aws ecs create-service --cluster << pipeline.parameters.cluster_name >> --service-name << pipeline.parameters.service_name >> --task-definition << pipeline.parameters.task_name >> --desired-count 1 --capacity-provider-strategy "capacityProvider=FARGATE_SPOT,weight=1"
+      - run: |
+          aws ecs create-service \
+          --cluster << pipeline.parameters.cluster_name >> \
+          --service-name << pipeline.parameters.service_name >> \
+          --task-definition << pipeline.parameters.task_name >> \
+          --desired-count 1 \
+          --capacity-provider-strategy "capacityProvider=FARGATE_SPOT,weight=1" \
+          --network-configuration '{
+            "awsvpcConfiguration": 
+              {
+                "subnets": << pipeline.parameters.new_task_subnet >>,
+                "securityGroups": << pipeline.parameters.new_task_security_id >>,
+                "assignPublicIp": "ENABLED"
+              }
+            }'
       #- aws-ecs/run-task:
       #    capacity-provider-strategy: >-
       #      capacityProvider=FARGATE_SPOT,weight=1
@@ -144,21 +158,21 @@ workflows:
         - equal: [ false, << pipeline.parameters.is_develop_deploy >> ]
 
     jobs:
-      - test-build
-      - aws-ecr/build-and-push-image:
-          name: push-image
-          requires:
-            - test-build
-          context: << pipeline.parameters.aws_credential_name >>
-          checkout: false
-          attach-workspace: true
-          workspace-root: .
-          repo: << pipeline.parameters.image_name >>
-          tag: 'latest'
-      - create-new-task:
-          context: << pipeline.parameters.aws_credential_name >>
-          requires:
-            - push-image
+      # - test-build
+      #- aws-ecr/build-and-push-image:
+      #    name: push-image
+      #    requires:
+      #      - test-build
+      #    context: << pipeline.parameters.aws_credential_name >>
+      #    checkout: false
+      #    attach-workspace: true
+      #    workspace-root: .
+      #    repo: << pipeline.parameters.image_name >>
+      #    tag: 'latest'
+      #- create-new-task:
+      #    context: << pipeline.parameters.aws_credential_name >>
+      #    requires:
+      #      - push-image
       - create-new-service:
           context: << pipeline.parameters.aws_credential_name >>
           requires:
