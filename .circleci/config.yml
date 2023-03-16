@@ -135,14 +135,14 @@ jobs:
           --task-definition << pipeline.parameters.task_name >> \
           --desired-count 1 \
           --capacity-provider-strategy "capacityProvider=FARGATE_SPOT,weight=1" \
-          --network-configuration '{
-            "awsvpcConfiguration": 
+          --network-configuration "{
+            \"awsvpcConfiguration\": 
               {
-                "subnets": ${SUBNET_LIST},
-                "securityGroups": ${SECURITY_LIST},
-                "assignPublicIp": "ENABLED"
+                \"subnets\": $SUBNET_LIST,
+                \"securityGroups\": $SECURITY_LIST,
+                \"assignPublicIp\": \"ENABLED\"
               }
-            }'
+            }"
       #- aws-ecs/run-task:
       #    capacity-provider-strategy: >-
       #      capacityProvider=FARGATE_SPOT,weight=1
