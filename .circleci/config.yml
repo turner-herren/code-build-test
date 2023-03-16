@@ -145,19 +145,10 @@ jobs:
               {
                 \"subnets\": << pipeline.parameters.new_task_subnet >> ,
                 \"securityGroups\": << pipeline.parameters.new_task_security_id >>,
-                \"assignPublicIp\": \"ENABLED\"
+                \"assignPublicIp\": \"ENABLED\",
+                \"enableDnsHostnames\": true
               }
             }"
-      #- aws-ecs/run-task:
-      #    capacity-provider-strategy: >-
-      #      capacityProvider=FARGATE_SPOT,weight=1
-      #    assign-public-ip: "ENABLED"
-      #    launch-type: ''
-      #    group: << pipeline.parameters.service_name >>
-      #    cluster: << pipeline.parameters.cluster_name >>
-      #    subnet-ids: << pipeline.parameters.new_task_subnet >>
-      #    security-group-ids: << pipeline.parameters.new_task_security_id >>
-      #    task-definition: << pipeline.parameters.task_name >>
 workflows:
   version: 2
   create-task:
@@ -167,26 +158,26 @@ workflows:
         - equal: [ false, << pipeline.parameters.is_develop_deploy >> ]
 
     jobs:
-      # - test-build
-      #- aws-ecr/build-and-push-image:
-      #    name: push-image
-      #    requires:
-      #      - test-build
-      #    context: << pipeline.parameters.aws_credential_name >>
-      #    checkout: false
-      #    attach-workspace: true
-      #    workspace-root: .
-      #    repo: << pipeline.parameters.image_name >>
-      #    tag: 'latest'
-      #- create-new-task:
-      #    context: << pipeline.parameters.aws_credential_name >>
-      #    requires:
-      #      - push-image
-      - create-new-service:
+       - test-build
+       - aws-ecr/build-and-push-image:
+          name: push-image
+          requires:
+            - test-build
+          context: << pipeline.parameters.aws_credential_name >>
+          checkout: false
+          attach-workspace: true
+          workspace-root: .
+          repo: << pipeline.parameters.image_name >>
+          tag: 'latest'
+       - create-new-task:
+          context: << pipeline.parameters.aws_credential_name >>
+          requires:
+            - push-image
+       - create-new-service:
           context: << pipeline.parameters.aws_credential_name >>
           #requires:
           #  - create-new-task
-      - aws-ecs/deploy-service-update:
+       - aws-ecs/deploy-service-update:
           name: deploy-service
           requires:
             - create-new-service
