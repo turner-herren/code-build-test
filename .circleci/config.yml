@@ -123,6 +123,7 @@ jobs:
     docker:
       - image: 'cimg/python:3.10'
     steps:
+      - aws-cli/setup
       - run: aws ecs create-service --cluster << pipeline.parameters.cluster_name >> --service-name << pipeline.parameters.service_name >> --task-definition << pipeline.parameters.task_name >> --desired-count 1 --launch-type FARGATE_SPOT
       #- aws-ecs/run-task:
       #    capacity-provider-strategy: >-
