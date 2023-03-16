@@ -110,13 +110,6 @@ jobs:
             \"taskRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"executionRoleArn\": \"arn:aws:iam::248704842720:role/ecsTaskExecutionRole\",
             \"networkMode\": \"awsvpc\",
-            \"compatibilities\": [
-              \"EC2\",
-              \"FARGATE\"
-            ],
-            \"requiresCompatibilities\": [
-              \"FARGATE\"
-            ],
             \"runtimePlatform\": {
               \"cpuArchitecture\": \"X86_64\",
               \"operatingSystemFamily\": \"LINUX\"
