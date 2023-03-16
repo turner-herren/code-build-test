@@ -129,6 +129,15 @@ jobs:
       - run: echo $SECURITY_LIST
       - run: echo $SUBNET_LIST
       - run: |
+          echo "{
+            \"awsvpcConfiguration\":
+              {
+              \"subnets\": $SUBNET_LIST,
+              \"securityGroups\": $SECURITY_LIST,
+              \"assignPublicIp\": \"ENABLED\"
+            }
+          }"
+      - run: |
           aws ecs create-service \
           --cluster << pipeline.parameters.cluster_name >> \
           --service-name << pipeline.parameters.service_name >> \
