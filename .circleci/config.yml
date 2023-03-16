@@ -124,24 +124,24 @@ jobs:
       - image: 'cimg/python:3.10'
     steps:
       - aws-cli/setup
+      - run: IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_security_id >>"
+      - run: output=()
       - run: |
-          IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_security_id >>"
-          output=()
-          for element in "${array[@]}"
+          for element in "${array[@]}" 
           do
           output+=("\"$element\"")
           done
           
-          SECURITY_LIST="[${output[@]}]"
+      - run: SECURITY_LIST="[${output[@]}]"
+      - run: IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_subnet >>"
+      - run: output=()
       - run: |
-          IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_subnet >>"
-          output=()
-          for element in "${array[@]}"
+          for element in "${array[@]}" 
           do
           output+=("\"$element\"")
           done
-          
-          SUBNET_LIST="[${output[@]}]"
+
+      - run: SUBNET_LIST="[${output[@]}]"
       - run: |
           aws ecs create-service \
           --cluster << pipeline.parameters.cluster_name >> \
