@@ -124,7 +124,7 @@ jobs:
       - image: 'cimg/python:3.10'
     steps:
       - aws-cli/setup
-      - run: echo ${pipeline.parameters.new_task_security_id}
+      - run: echo << pipeline.parameters.new_task_security_id >>
       # - run: IFS=',' read -r -a array <<< "<< pipeline.parameters.new_task_security_id >>"
       # - run: output=()
       # - run: |
