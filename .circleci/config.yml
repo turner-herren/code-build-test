@@ -146,11 +146,6 @@ jobs:
                 \"subnets\": << pipeline.parameters.new_task_subnet >> ,
                 \"securityGroups\": << pipeline.parameters.new_task_security_id >>,
                 \"assignPublicIp\": \"ENABLED\"
-              },
-            \"awsvpcAdditionalOptions\":
-              {
-                \"dnsSupport\":\"ENABLED\",
-                \"dnsHostname\":\"ENABLED\"
               }
             }"
 workflows:
