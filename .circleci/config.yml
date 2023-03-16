@@ -125,7 +125,7 @@ jobs:
     steps:
       - aws-cli/setup
       - run: SECURITY_GROUP="<< pipeline.parameters.new_task_security_id >>"
-      - run: IFS=',' read -r -a array <<< $SECURITY_GROUP
+      - run: IFS=',' read -r -a array <\<< $SECURITY_GROUP
       - run: output=()
       - run: |
           for element in "${array[@]}" 
@@ -136,7 +136,7 @@ jobs:
       - run: SECURITY_LIST="[${output[@]}]"
 
       - run: SUBNETS="<< pipeline.parameters.new_task_subnet >>"
-      - run: IFS=',' read -r -a array <<< $SUBNETS
+      - run: IFS=',' read -r -a array <\<< $SUBNETS
       - run: output=()
       - run: |
           for element in "${array[@]}" 
