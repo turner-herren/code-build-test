@@ -1,0 +1,117 @@
+version: 2.1
+insights:
+  performance: true
+
+parameters:
+  aws_credential_name:
+    default: AWS_CREDENTIAL
+    type: string
+  is_develop_deploy:
+    default: false
+    type: boolean
+  cluster_name:
+    default: code-build-test
+    type: string
+  task_name:
+    default: code-build-test-task
+    type: string
+  service_name:
+    default: code-build-test-service
+    type: string
+  image_name:
+    default: 248704842720.dkr.ecr.ap-northeast-2.amazonaws.com/code-build-test
+    type: string
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+  aws-ecs: circleci/aws-ecs@3.2.0
+
+
+
+
+executors:
+  build-executor:
+    docker:
+      - image: gradle:7.6.1-jdk17@sha256:37d0d2809d0f0d58e114f6b4bcc872731b0985bbe0bf8f3592935c03953cc973
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+jobs:
+  test-build:
+    executor: build-executor
+    working_directory: ~/code-build-test
+    steps:
+      - checkout
+      - restore_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - run: ./gradlew test
+      - store_test_results:
+          path: build/test-results/test
+
+      - run: ./gradlew build
+      - save_cache:
+          key: gradle-cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - .gradle/
+      - store_artifacts:
+          path: build/libs/
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+workflows:
+  version: 2
+  develop-build-deploy:
+    when:
+      and:
+        - equal: [ true, << pipeline.parameters.is_develop_deploy >> ]
+    jobs:
+      - test-build
+      - aws-ecr/build-and-push-image:
+          name: push-image
+          requires:
+            - test-build
+          context: << pipeline.parameters.aws_credential_name >>
+          checkout: false
+          attach-workspace: true
+          workspace-root: .
+          repo: << pipeline.parameters.image_name >>
+          tag: '${CIRCLE_SHA1}'
+      - aws-ecs/deploy-service-update:
+          name: deploy-service
+          requires:
+            - push-image
+          context: AWS_CREDENTIAL
+          cluster: << pipeline.parameters.cluster_name >>
+          family: << pipeline.parameters. >>
+          service-name: << pipeline.parameters. >>
+          container-image-name-updates: 'image=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'
+  production-build-deploy:
+    when:
+      and:
+        - equal: [ main, << pipeline.git.branch >> ]
+        # - equal: [ true, << pipeline.parameters.is_develop_deploy >> ]
+    jobs:
+      - test-build
+      - aws-ecr/build-and-push-image:
+          name: push-image
+          requires:
+            - test-build
+          context: << pipeline.parameters.aws_credential_name >>
+          checkout: false
+          attach-workspace: true
+          workspace-root: .
+          repo: << pipeline.parameters.image_name >>
+          tag: '${CIRCLE_SHA1}'
+      - aws-ecs/deploy-service-update:
+          name: deploy-service
+          requires:
+            - push-image
+          context: AWS_CREDENTIAL
+          cluster: << pipeline.parameters.cluster_name >>
+          family: << pipeline.parameters. >>
+          service-name: << pipeline.parameters. >>
+          container-image-name-updates: 'image=${pipeline.parameters.image_name},tag=${CIRCLE_SHA1}'

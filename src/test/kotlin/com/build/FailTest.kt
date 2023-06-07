@@ -7,6 +7,7 @@ class FailTest {
 
     @Test
     fun shouldTestFail() {
-        Assertions.assertTrue(true)
+        Assertions.assertTrue(true
+        )
     }
 }
